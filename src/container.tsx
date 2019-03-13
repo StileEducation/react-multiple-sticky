@@ -235,6 +235,11 @@ export default class StickyContainer extends React.Component<Props, State> {
             background: "white",
             zIndex: 10,
         };
+
+        if (this.props.scrollDirection === "X") {
+            style.display = "inline-block";
+        }
+
         return <div style={style} />;
     };
 
@@ -263,6 +268,7 @@ export default class StickyContainer extends React.Component<Props, State> {
             style.left = inTransition
                 ? this.state.left
                 : this.getContainerLeftPosition();
+            style.display = "inline-block";
         } else {
             style.top = inTransition
                 ? this.state.top
@@ -300,6 +306,10 @@ export default class StickyContainer extends React.Component<Props, State> {
                                     ? "hidden"
                                     : "visible",
                             zIndex: this.state.ref === `sticky_${idx}` ? 5 : 15,
+                            display:
+                                this.props.scrollDirection === "X"
+                                    ? "inline-block"
+                                    : "block",
                         },
                     });
                 }

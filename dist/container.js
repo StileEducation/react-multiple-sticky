@@ -123,6 +123,9 @@ var StickyContainer = function (_React$Component) {
                 background: "white",
                 zIndex: 10
             };
+            if (_this.props.scrollDirection === "X") {
+                style.display = "inline-block";
+            }
             return React.createElement("div", { style: style });
         };
         _this.getSticky = function () {
@@ -140,6 +143,7 @@ var StickyContainer = function (_React$Component) {
             };
             if (_this.props.scrollDirection === "X") {
                 style.left = inTransition ? _this.state.left : _this.getContainerLeftPosition();
+                style.display = "inline-block";
             } else {
                 style.top = inTransition ? _this.state.top : _this.getContainerTopPosition();
             }
@@ -158,7 +162,8 @@ var StickyContainer = function (_React$Component) {
                         style: {
                             position: "relative",
                             visibility: _this.state.ref === "sticky_" + idx ? "hidden" : "visible",
-                            zIndex: _this.state.ref === "sticky_" + idx ? 5 : 15
+                            zIndex: _this.state.ref === "sticky_" + idx ? 5 : 15,
+                            display: _this.props.scrollDirection === "X" ? "inline-block" : "block"
                         }
                     });
                 }

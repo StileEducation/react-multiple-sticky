@@ -136,10 +136,13 @@ var StickyContainer = function (_React$Component) {
                 width: _this.state.width + "px",
                 height: _this.state.height + "px",
                 position: inTransition ? "absolute" : "fixed",
-                top: inTransition && _this.props.scrollDirection !== "X" ? _this.state.top : _this.getContainerTopPosition(),
-                left: inTransition && _this.props.scrollDirection === "X" ? _this.state.left : _this.getContainerLeftPosition(),
                 zIndex: 20
             };
+            if (_this.props.scrollDirection === "X") {
+                style.left = inTransition ? _this.state.left : _this.getContainerLeftPosition();
+            } else {
+                style.top = inTransition ? _this.state.top : _this.getContainerTopPosition();
+            }
             var className = inTransition ? _this.props.stickyTransitionClassName : _this.props.stickyClassName;
             return React.createElement("div", { className: className, style: style }, React.createElement(element_1.default, _extends({}, sticky.props, {
                 style: _extends({}, sticky.props.style || {}, {

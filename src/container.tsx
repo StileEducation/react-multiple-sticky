@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import StickyElement from "./element";
 
 export interface Props extends React.Props<StickyContainer> {
+    scrollDirection?: "X" | "Y";
     className?: string;
     contentClassName?: string;
     stickyClassName?: string;
@@ -15,6 +16,7 @@ export interface Props extends React.Props<StickyContainer> {
 export interface State {
     ref: string;
     top: number;
+    left: number;
     height: number;
     width: number;
 }
@@ -32,6 +34,7 @@ export default class StickyContainer extends React.Component<Props, State> {
         this.state = {
             ref: null,
             top: 0,
+            left: 0,
             height: 0,
             width: 0,
         };
@@ -40,7 +43,11 @@ export default class StickyContainer extends React.Component<Props, State> {
     public render() {
         const style = Object.assign(
             {},
-            { overflowY: "auto", position: "relative", zIndex: 100 },
+            {
+                [`overflow${this.props.scrollDirection || "Y"}`]: "auto",
+                position: "relative",
+                zIndex: 100,
+            },
             this.props.style,
         );
         const contentStyle = Object.assign(
@@ -71,9 +78,21 @@ export default class StickyContainer extends React.Component<Props, State> {
         this.onScrollHandler();
     }
 
-    public scrollToTop() {
+    public resetScroll() {
         // in some cases we want want to reset everything (when for example list of items change).
         // this will also trigger onScrollHandler
+        if (this.props.scrollDirection === "X") {
+            this.scrollToLeft();
+        } else {
+            this.scrollToTop();
+        }
+    }
+
+    public scrollToLeft() {
+        this.refs.container.scrollLeft = 0;
+    }
+
+    public scrollToTop() {
         this.refs.container.scrollTop = 0;
     }
 
@@ -100,13 +119,21 @@ export default class StickyContainer extends React.Component<Props, State> {
         const container = this.refs.container;
         const state: any = {
             ref: null,
-            top: null,
             height: 0,
             width: 0,
         };
-        if (container.scrollTop === 0) {
-            this.setState(state);
-            return;
+        if (this.props.scrollDirection === "X") {
+            state.left = null;
+            if (container.scrollLeft === 0) {
+                this.setState(state);
+                return;
+            }
+        } else {
+            state.top = null;
+            if (container.scrollTop === 0) {
+                this.setState(state);
+                return;
+            }
         }
 
         let sticky: HTMLElement = null;
@@ -118,31 +145,70 @@ export default class StickyContainer extends React.Component<Props, State> {
                 const element = ReactDOM.findDOMNode(
                     this.refs[ref],
                 ) as HTMLElement;
-                const offsetTop = element.offsetTop;
-                // Snap to grid of 2px to avoid side effect due to zoom and non-integer pixel values
-                if (container.scrollTop + 2 >= offsetTop) {
-                    if (node && node.top && node.top >= offsetTop) return;
-                    // In case we're scrolling back and reach previous sticky header
-                    node = {
-                        ref,
-                        top: offsetTop - element.offsetHeight,
-                        height: element.getBoundingClientRect().height,
-                        width: element.getBoundingClientRect().width,
-                    };
-                    sticky = element;
-                } else if (sticky) {
-                    // In case we're scrolling back
-                    if (
-                        container.scrollTop + sticky.offsetHeight >=
-                        offsetTop
-                    ) {
-                        state.top = offsetTop - sticky.offsetHeight;
+                if (this.props.scrollDirection === "X") {
+                    const offsetLeft = element.offsetLeft;
+                    // Snap to grid of 2px to avoid side effect due to zoom and non-integer pixel values
+                    if (container.scrollLeft + 2 >= offsetLeft) {
+                        if (node && node.left && node.left >= offsetLeft) {
+                            return;
+                        }
+                        // In case we're scrolling back and reach previous sticky header
+                        node = {
+                            ref,
+                            left: offsetLeft - element.offsetWidth,
+                            height: element.getBoundingClientRect().height,
+                            width: element.getBoundingClientRect().width,
+                        };
+                        sticky = element;
+                    } else if (sticky) {
+                        // In case we're scrolling back
+                        if (
+                            container.scrollLeft + sticky.offsetWidth >=
+                            offsetLeft
+                        ) {
+                            state.left = offsetLeft - sticky.offsetWidth;
+                        }
+                    }
+                } else {
+                    const offsetTop = element.offsetTop;
+                    // Snap to grid of 2px to avoid side effect due to zoom and non-integer pixel values
+                    if (container.scrollTop + 2 >= offsetTop) {
+                        if (node && node.top && node.top >= offsetTop) {
+                            return;
+                        }
+                        // In case we're scrolling back and reach previous sticky header
+                        node = {
+                            ref,
+                            top: offsetTop - element.offsetHeight,
+                            height: element.getBoundingClientRect().height,
+                            width: element.getBoundingClientRect().width,
+                        };
+                        sticky = element;
+                    } else if (sticky) {
+                        // In case we're scrolling back
+                        if (
+                            container.scrollTop + sticky.offsetHeight >=
+                            offsetTop
+                        ) {
+                            state.top = offsetTop - sticky.offsetHeight;
+                        }
                     }
                 }
             });
         if (node && node.ref) {
-            if (node.ref === this.state.ref && state.top === this.state.top)
+            if (
+                this.props.scrollDirection === "X" &&
+                node.ref === this.state.ref &&
+                state.left === this.state.left
+            ) {
                 return;
+            } else if (
+                this.props.scrollDirection !== "X" &&
+                node.ref === this.state.ref &&
+                state.top === this.state.top
+            ) {
+                return;
+            }
             state.ref = node.ref;
             state.height = node.height;
             state.width = node.width;
@@ -154,6 +220,10 @@ export default class StickyContainer extends React.Component<Props, State> {
         return this.refs.container.getBoundingClientRect().top;
     }
 
+    private getContainerLeftPosition() {
+        return this.refs.container.getBoundingClientRect().left;
+    }
+
     private getCover = () => {
         if (!this.state.ref) return null;
         const style: React.CSSProperties = {
@@ -161,6 +231,7 @@ export default class StickyContainer extends React.Component<Props, State> {
             height: this.state.height + "px",
             position: "fixed",
             top: this.getContainerTopPosition(),
+            left: this.getContainerLeftPosition(),
             background: "white",
             zIndex: 10,
         };
@@ -169,7 +240,10 @@ export default class StickyContainer extends React.Component<Props, State> {
 
     private getSticky = () => {
         if (!this.state.ref) return null;
-        const inTransition = this.state.top !== null;
+        const inTransition =
+            this.props.scrollDirection === "X"
+                ? this.state.left !== null
+                : this.state.top !== null;
         const sticky = this.refs[this.state.ref] as StickyElement;
 
         if (!sticky) {
@@ -182,7 +256,14 @@ export default class StickyContainer extends React.Component<Props, State> {
             width: this.state.width + "px",
             height: this.state.height + "px",
             position: inTransition ? "absolute" : "fixed",
-            top: inTransition ? this.state.top : this.getContainerTopPosition(),
+            top:
+                inTransition && this.props.scrollDirection !== "X"
+                    ? this.state.top
+                    : this.getContainerTopPosition(),
+            left:
+                inTransition && this.props.scrollDirection === "X"
+                    ? this.state.left
+                    : this.getContainerLeftPosition(),
             zIndex: 20,
         };
         const className = inTransition

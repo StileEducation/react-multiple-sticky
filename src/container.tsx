@@ -256,16 +256,19 @@ export default class StickyContainer extends React.Component<Props, State> {
             width: this.state.width + "px",
             height: this.state.height + "px",
             position: inTransition ? "absolute" : "fixed",
-            top:
-                inTransition && this.props.scrollDirection !== "X"
-                    ? this.state.top
-                    : this.getContainerTopPosition(),
-            left:
-                inTransition && this.props.scrollDirection === "X"
-                    ? this.state.left
-                    : this.getContainerLeftPosition(),
             zIndex: 20,
         };
+
+        if (this.props.scrollDirection === "X") {
+            style.left = inTransition
+                ? this.state.left
+                : this.getContainerLeftPosition();
+        } else {
+            style.top = inTransition
+                ? this.state.top
+                : this.getContainerTopPosition();
+        }
+
         const className = inTransition
             ? this.props.stickyTransitionClassName
             : this.props.stickyClassName;

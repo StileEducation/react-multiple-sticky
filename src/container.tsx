@@ -269,10 +269,20 @@ export default class StickyContainer extends React.Component<Props, State> {
                 ? this.state.left
                 : this.getContainerLeftPosition();
             style.display = "inline-block";
+
+            // If the container is scrolled in the cross-direction, maintain
+            // the same offset on the sticky
+            if (this.refs.container && this.refs.container.scrollTop !== 0) {
+                style.top = `-${this.refs.container.scrollTop}px`;
+            }
         } else {
             style.top = inTransition
                 ? this.state.top
                 : this.getContainerTopPosition();
+
+            if (this.refs.container && this.refs.container.scrollLeft !== 0) {
+                style.left = `-${this.refs.container.scrollLeft}px`;
+            }
         }
 
         const className = inTransition

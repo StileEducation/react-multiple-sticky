@@ -273,7 +273,10 @@ export default class StickyContainer extends React.Component<Props, State> {
             // If the container is scrolled in the cross-direction, maintain
             // the same offset on the sticky
             if (this.refs.container && this.refs.container.scrollTop !== 0) {
-                style.top = `-${this.refs.container.scrollTop}px`;
+                style.top =
+                    -1 *
+                    (this.refs.container.scrollTop -
+                        this.getContainerTopPosition());
             }
         } else {
             style.top = inTransition
@@ -281,7 +284,10 @@ export default class StickyContainer extends React.Component<Props, State> {
                 : this.getContainerTopPosition();
 
             if (this.refs.container && this.refs.container.scrollLeft !== 0) {
-                style.left = `-${this.refs.container.scrollLeft}px`;
+                style.left =
+                    -1 *
+                    (this.refs.container.scrollLeft -
+                        this.getContainerLeftPosition());
             }
         }
 

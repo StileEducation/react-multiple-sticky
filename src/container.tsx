@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import StickyElement from "./element";
+import { StickyElementContainer } from "./element";
 
 export interface Props extends React.Props<StickyContainer> {
     scrollDirection?: "X" | "Y";
@@ -293,7 +294,7 @@ export default class StickyContainer extends React.Component<Props, State> {
     };
 
     private getChildren = () => {
-        return React.Children.map(
+        const children = React.Children.map(
             this.props.children,
             (child: React.ReactElement<any>, idx: number) => {
                 if (child.type === StickyElement) {
@@ -312,9 +313,53 @@ export default class StickyContainer extends React.Component<Props, State> {
                                     : "block",
                         },
                     });
+                } else if (
+                    child.type === StickyElementContainer &&
+                    child.props.children
+                ) {
+                    // Unwrap grandchildren too
+                    return React.Children.map(
+                        child.props.children,
+                        (
+                            innerChild: React.ReactElement<any>,
+                            innerIdx: number,
+                        ) => {
+                            if (innerChild.type === StickyElement) {
+                                return React.cloneElement(innerChild, {
+                                    ref: `sticky_${idx}_${innerIdx}`,
+                                    style: {
+                                        position: "relative",
+                                        visibility:
+                                            this.state.ref ===
+                                            `sticky_${idx}_${innerIdx}`
+                                                ? "hidden"
+                                                : "visible",
+                                        zIndex:
+                                            this.state.ref ===
+                                            `sticky_${idx}_${innerIdx}`
+                                                ? 5
+                                                : 15,
+                                        display:
+                                            this.props.scrollDirection === "X"
+                                                ? "inline-block"
+                                                : "block",
+                                    },
+                                });
+                            }
+                            return innerChild;
+                        },
+                    );
                 }
                 return child;
             },
         );
+
+        // If it's an array, flatten in case we traversed through multiple
+        // levels
+        if (Array.isArray(children)) {
+            return (children as any).flat();
+        }
+
+        return children;
     };
 }

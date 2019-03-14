@@ -8,3 +8,6 @@ export interface Props extends React.Props<StickyElement> {
 export default class StickyElement extends React.Component<Props, {}> {
     render(): JSX.Element;
 }
+export declare class StickyElementContainer extends React.Component<React.Props<HTMLDivElement>, {}> {
+    render(): JSX.Element;
+}

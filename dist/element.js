@@ -1,5 +1,7 @@
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31,3 +33,27 @@ var StickyElement = function (_React$Component) {
 }(React.Component);
 
 exports.default = StickyElement;
+
+var StickyElementContainer = function (_React$Component2) {
+    _inherits(StickyElementContainer, _React$Component2);
+
+    function StickyElementContainer() {
+        _classCallCheck(this, StickyElementContainer);
+
+        return _possibleConstructorReturn(this, (StickyElementContainer.__proto__ || Object.getPrototypeOf(StickyElementContainer)).apply(this, arguments));
+    }
+
+    _createClass(StickyElementContainer, [{
+        key: "render",
+        value: function render() {
+            if (!this.props.children || this.props.children[0].type !== StickyElement) {
+                throw new Error("First child of a StickyElementContainer must be a StickyElement!");
+            }
+            return React.createElement("div", _extends({}, this.props));
+        }
+    }]);
+
+    return StickyElementContainer;
+}(React.Component);
+
+exports.StickyElementContainer = StickyElementContainer;

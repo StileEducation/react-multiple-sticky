@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
 var element_1 = require("./element");
+var element_2 = require("./element");
 var scheduled = false;
 
 var StickyContainer = function (_React$Component) {
@@ -155,7 +156,7 @@ var StickyContainer = function (_React$Component) {
             })));
         };
         _this.getChildren = function () {
-            return React.Children.map(_this.props.children, function (child, idx) {
+            var children = React.Children.map(_this.props.children, function (child, idx) {
                 if (child.type === element_1.default) {
                     return React.cloneElement(child, {
                         ref: "sticky_" + idx,
@@ -166,9 +167,28 @@ var StickyContainer = function (_React$Component) {
                             display: _this.props.scrollDirection === "X" ? "inline-block" : "block"
                         }
                     });
+                } else if (child.type === element_2.StickyElementContainer && child.props.children) {
+                    return React.Children.map(child.props.children, function (innerChild, innerIdx) {
+                        if (innerChild.type === element_1.default) {
+                            return React.cloneElement(innerChild, {
+                                ref: "sticky_" + idx + "_" + innerIdx,
+                                style: {
+                                    position: "relative",
+                                    visibility: _this.state.ref === "sticky_" + idx + "_" + innerIdx ? "hidden" : "visible",
+                                    zIndex: _this.state.ref === "sticky_" + idx + "_" + innerIdx ? 5 : 15,
+                                    display: _this.props.scrollDirection === "X" ? "inline-block" : "block"
+                                }
+                            });
+                        }
+                        return innerChild;
+                    });
                 }
                 return child;
             });
+            if (Array.isArray(children)) {
+                return children.flat();
+            }
+            return children;
         };
         _this.state = {
             ref: null,

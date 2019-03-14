@@ -15,3 +15,20 @@ export default class StickyElement extends React.Component<Props, {}> {
         );
     }
 }
+
+export class StickyElementContainer extends React.Component<
+    React.Props<HTMLDivElement>,
+    {}
+> {
+    public render() {
+        if (
+            !this.props.children ||
+            this.props.children[0].type !== StickyElement
+        ) {
+            throw new Error(
+                "First child of a StickyElementContainer must be a StickyElement!",
+            );
+        }
+        return <div {...this.props} />;
+    }
+}

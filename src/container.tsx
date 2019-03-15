@@ -19,8 +19,8 @@ export interface State {
     left: number;
     height: number;
     width: number;
-    scrollLeft?: number;
-    scrollTop?: number;
+    scrollLeft: number;
+    scrollTop: number;
 }
 
 let scheduled = false;
@@ -286,6 +286,10 @@ export default class StickyContainer extends React.Component<Props, State> {
                 : this.getContainerLeftPosition();
             style.display = "inline-block";
 
+            // Adjust height to not go outside container
+            style.height = this.state.height + this.state.scrollTop;
+            style.overflow = "hidden";
+
             // If the container is scrolled in the cross-direction, maintain
             // the same offset on the sticky
             if (!inTransition && this.state.scrollTop !== 0) {
@@ -297,6 +301,10 @@ export default class StickyContainer extends React.Component<Props, State> {
             style.top = inTransition
                 ? this.state.top
                 : this.getContainerTopPosition();
+
+            // Adjust width to not go outside container
+            style.width = this.state.width + this.state.scrollLeft;
+            style.overflow = "hidden";
 
             if (!inTransition && this.state.scrollLeft !== 0) {
                 style.left =

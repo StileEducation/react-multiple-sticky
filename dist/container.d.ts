@@ -15,8 +15,8 @@ export interface State {
     left: number;
     height: number;
     width: number;
-    scrollLeft?: number;
-    scrollTop?: number;
+    scrollLeft: number;
+    scrollTop: number;
 }
 export default class StickyContainer extends React.Component<Props, State> {
     refs: {

@@ -150,11 +150,15 @@ var StickyContainer = function (_React$Component) {
             if (_this.props.scrollDirection === "X") {
                 style.left = inTransition ? _this.state.left : _this.getContainerLeftPosition();
                 style.display = "inline-block";
+                style.height = _this.state.height + _this.state.scrollTop;
+                style.overflow = "hidden";
                 if (!inTransition && _this.state.scrollTop !== 0) {
                     style.top = -1 * (_this.state.scrollTop - _this.getContainerTopPosition());
                 }
             } else {
                 style.top = inTransition ? _this.state.top : _this.getContainerTopPosition();
+                style.width = _this.state.width + _this.state.scrollLeft;
+                style.overflow = "hidden";
                 if (!inTransition && _this.state.scrollLeft !== 0) {
                     style.left = -1 * (_this.state.scrollLeft - _this.getContainerLeftPosition());
                 }

@@ -126,7 +126,7 @@ var StickyContainer = function (_React$Component) {
                 position: "fixed",
                 top: _this.getContainerTopPosition(),
                 left: _this.getContainerLeftPosition(),
-                background: "white",
+                backgroundColor: _this.props.relative ? "white" : undefined,
                 zIndex: 10
             };
             if (_this.props.scrollDirection === "X") {
@@ -203,7 +203,7 @@ var StickyContainer = function (_React$Component) {
         value: function render() {
             var _extends2;
 
-            var style = _extends({}, (_extends2 = {}, _defineProperty(_extends2, "overflow" + (this.props.scrollDirection || "Y"), "auto"), _defineProperty(_extends2, "position", "relative"), _defineProperty(_extends2, "zIndex", 100), _extends2), this.props.style);
+            var style = _extends({}, (_extends2 = {}, _defineProperty(_extends2, "overflow" + (this.props.scrollDirection || "Y"), "auto"), _defineProperty(_extends2, "position", this.props.relative ? "relative" : undefined), _defineProperty(_extends2, "zIndex", 100), _extends2), this.props.style);
             var contentStyle = _extends({}, { position: "relative" }, this.props.contentStyle);
             return React.createElement("div", { ref: "container", style: style, onScroll: this.onScrollHandler, className: this.props.className }, React.createElement("div", { className: this.props.contentClassName, style: contentStyle }, this.getCover(), this.getSticky(), this.getChildren()));
         }

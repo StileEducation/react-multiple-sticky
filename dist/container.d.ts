@@ -8,6 +8,7 @@ export interface Props extends React.Props<StickyContainer> {
     stickyTransitionClassName?: string;
     style?: React.CSSProperties;
     contentStyle?: React.CSSProperties;
+    relative?: boolean;
 }
 export interface State {
     ref: string;

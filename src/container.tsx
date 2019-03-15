@@ -11,6 +11,7 @@ export interface Props extends React.Props<StickyContainer> {
     stickyTransitionClassName?: string;
     style?: React.CSSProperties;
     contentStyle?: React.CSSProperties;
+    relative?: boolean;
 }
 
 export interface State {
@@ -49,7 +50,7 @@ export default class StickyContainer extends React.Component<Props, State> {
             {},
             {
                 [`overflow${this.props.scrollDirection || "Y"}`]: "auto",
-                position: "relative",
+                position: this.props.relative ? "relative" : undefined,
                 zIndex: 100,
             },
             this.props.style,
@@ -248,7 +249,7 @@ export default class StickyContainer extends React.Component<Props, State> {
             position: "fixed",
             top: this.getContainerTopPosition(),
             left: this.getContainerLeftPosition(),
-            background: "white",
+            backgroundColor: this.props.relative ? "white" : undefined,
             zIndex: 10,
         };
 

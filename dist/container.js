@@ -27,6 +27,12 @@ var StickyContainer = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (StickyContainer.__proto__ || Object.getPrototypeOf(StickyContainer)).call(this, props));
 
         _this.onScrollHandler = function () {
+            if (_this.refs.container && _this.state.scrollLeft !== _this.refs.container.scrollLeft || _this.state.scrollTop !== _this.refs.container.scrollTop) {
+                _this.setState({
+                    scrollLeft: _this.refs.container.scrollLeft,
+                    scrollTop: _this.refs.container.scrollTop
+                });
+            }
             if (scheduled) {
                 return;
             }
@@ -43,12 +49,6 @@ var StickyContainer = function (_React$Component) {
                 height: 0,
                 width: 0
             };
-            if (_this.state.scrollLeft !== container.scrollLeft || _this.state.scrollTop !== container.scrollTop) {
-                _this.setState({
-                    scrollLeft: container.scrollLeft,
-                    scrollTop: container.scrollTop
-                });
-            }
             if (_this.props.scrollDirection === "X") {
                 state.left = null;
                 if (container.scrollLeft === 0) {

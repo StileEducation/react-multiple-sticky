@@ -109,6 +109,17 @@ export default class StickyContainer extends React.Component<Props, State> {
     }
 
     private onScrollHandler = () => {
+        if (
+            (this.refs.container &&
+                this.state.scrollLeft !== this.refs.container.scrollLeft) ||
+            this.state.scrollTop !== this.refs.container.scrollTop
+        ) {
+            this.setState({
+                scrollLeft: this.refs.container.scrollLeft,
+                scrollTop: this.refs.container.scrollTop,
+            });
+        }
+
         if (scheduled) {
             return;
         }
@@ -126,16 +137,6 @@ export default class StickyContainer extends React.Component<Props, State> {
             height: 0,
             width: 0,
         };
-
-        if (
-            this.state.scrollLeft !== container.scrollLeft ||
-            this.state.scrollTop !== container.scrollTop
-        ) {
-            this.setState({
-                scrollLeft: container.scrollLeft,
-                scrollTop: container.scrollTop,
-            });
-        }
 
         if (this.props.scrollDirection === "X") {
             state.left = null;

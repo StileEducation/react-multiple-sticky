@@ -19,6 +19,8 @@ export interface State {
     left: number;
     height: number;
     width: number;
+    scrollLeft?: number;
+    scrollTop?: number;
 }
 
 let scheduled = false;
@@ -37,6 +39,8 @@ export default class StickyContainer extends React.Component<Props, State> {
             left: 0,
             height: 0,
             width: 0,
+            scrollLeft: 0,
+            scrollTop: 0,
         };
     }
 
@@ -122,6 +126,17 @@ export default class StickyContainer extends React.Component<Props, State> {
             height: 0,
             width: 0,
         };
+
+        if (
+            this.state.scrollLeft !== container.scrollLeft ||
+            this.state.scrollTop !== container.scrollTop
+        ) {
+            this.setState({
+                scrollLeft: container.scrollLeft,
+                scrollTop: container.scrollTop,
+            });
+        }
+
         if (this.props.scrollDirection === "X") {
             state.left = null;
             if (container.scrollLeft === 0) {
@@ -272,30 +287,20 @@ export default class StickyContainer extends React.Component<Props, State> {
 
             // If the container is scrolled in the cross-direction, maintain
             // the same offset on the sticky
-            if (
-                !inTransition &&
-                this.refs.container &&
-                this.refs.container.scrollTop !== 0
-            ) {
+            if (!inTransition && this.state.scrollTop !== 0) {
                 style.top =
                     -1 *
-                    (this.refs.container.scrollTop -
-                        this.getContainerTopPosition());
+                    (this.state.scrollTop - this.getContainerTopPosition());
             }
         } else {
             style.top = inTransition
                 ? this.state.top
                 : this.getContainerTopPosition();
 
-            if (
-                !inTransition &&
-                this.refs.container &&
-                this.refs.container.scrollLeft !== 0
-            ) {
+            if (!inTransition && this.state.scrollLeft !== 0) {
                 style.left =
                     -1 *
-                    (this.refs.container.scrollLeft -
-                        this.getContainerLeftPosition());
+                    (this.state.scrollLeft - this.getContainerLeftPosition());
             }
         }
 

@@ -9,6 +9,8 @@ export interface Props extends React.Props<StickyContainer> {
     contentClassName?: string;
     stickyClassName?: string;
     stickyTransitionClassName?: string;
+    // Replace an element's class name with this only when sticky
+    stickyReplacementChildClassName?: string;
     style?: React.CSSProperties;
     contentStyle?: React.CSSProperties;
     relative?: boolean;
@@ -338,6 +340,10 @@ export default class StickyContainer extends React.Component<Props, State> {
                 if (child.type === StickyElement) {
                     return React.cloneElement(child, {
                         ref: `sticky_${idx}`,
+                        className:
+                            this.state.ref === `sticky_${idx}`
+                                ? this.props.stickyReplacementChildClassName
+                                : child.props.className,
                         style: {
                             position: "relative",
                             visibility:

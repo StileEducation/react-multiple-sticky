@@ -6,6 +6,7 @@ export interface Props extends React.Props<StickyContainer> {
     contentClassName?: string;
     stickyClassName?: string;
     stickyTransitionClassName?: string;
+    stickyReplacementChildClassName?: string;
     style?: React.CSSProperties;
     contentStyle?: React.CSSProperties;
     relative?: boolean;

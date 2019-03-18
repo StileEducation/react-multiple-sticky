@@ -175,6 +175,7 @@ var StickyContainer = function (_React$Component) {
                 if (child.type === element_1.default) {
                     return React.cloneElement(child, {
                         ref: "sticky_" + idx,
+                        className: _this.state.ref === "sticky_" + idx ? _this.props.stickyReplacementChildClassName : child.props.className,
                         style: {
                             position: "relative",
                             visibility: _this.state.ref === "sticky_" + idx ? "hidden" : "visible",
